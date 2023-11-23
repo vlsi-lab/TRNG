@@ -20,6 +20,7 @@ import operator
 def sort_n_plot(list, type_of_plot, unit_meas):
     fig, (ax1, ax2) = plot.subplots(1, 2)
     list.sort(key=operator.itemgetter(1,0)) #sort by INV to get ascending RO
+
     x = []
     y = []
     # n_inv fixed at 3 and 64
@@ -42,7 +43,7 @@ def sort_n_plot(list, type_of_plot, unit_meas):
         y.append(elem[2])
 
     ax1.plot(x, y, '-ro', label="#INV = 64")
-    ax1.grid() 
+    ax1.grid()
     ax1.set_xticks(range(0, 33, 4))
     title = type_of_plot + ' vs #ROs'
     ax1.set_title(title)
@@ -55,9 +56,8 @@ def sort_n_plot(list, type_of_plot, unit_meas):
     list.sort(key=operator.itemgetter(0,0)) #sort by RO to get ascending INV
     x.clear()
     y.clear()
-
     # n_RO fixed at 4 and 32
-    for elem in area_list[:5]:
+    for elem in list[:5]:
         x.append(elem[1])
         y.append(elem[2])
 
@@ -71,7 +71,7 @@ def sort_n_plot(list, type_of_plot, unit_meas):
     x.clear()
     y.clear()
 
-    for elem in area_list[-5:]:
+    for elem in list[-5:]:
         x.append(elem[1])
         y.append(elem[2])
         
@@ -82,9 +82,9 @@ def sort_n_plot(list, type_of_plot, unit_meas):
     ax2.grid()
     ax2.legend()
     
-    #plot.show()
+    plot.show()
     fig.set_size_inches(21, 12)
-    plot.savefig('./analysis_res/%s_graph.png' %type_of_plot)
+    #plot.savefig('./analysis_res/%s_graph.png' %type_of_plot)
 
 
 path = os.path.join(os.getcwd(), "results/*.rpt")
