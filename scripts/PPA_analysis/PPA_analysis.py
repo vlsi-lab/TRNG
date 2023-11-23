@@ -84,7 +84,7 @@ def sort_n_plot(list, type_of_plot, unit_meas):
     
     plot.show()
     fig.set_size_inches(21, 12)
-    #plot.savefig('./analysis_res/%s_graph.png' %type_of_plot)
+    plot.savefig('./analysis_res/%s_graph.png' %type_of_plot)
 
 
 path = os.path.join(os.getcwd(), "results/*.rpt")
