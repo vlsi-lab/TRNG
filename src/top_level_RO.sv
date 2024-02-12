@@ -1,36 +1,41 @@
 module top_level_RO #(
         parameter int unsigned N_STAGES = 32,
-        parameter int unsigned RO_LENGTH
-        )
+        parameter int unsigned RO_LENGTH = 64
+    )
     (
-        //`ifdef SIM
-         input  int unsigned inv_delay[N_STAGES][RO_LENGTH],    
-        //`endif
-         input  logic     RO_en,
-         input  logic     dff_en,	       	
-         input  logic     clk,
-         output logic     random_bit  
+        input  logic  RO_en,
+        input  logic  dff_en,
+        input  logic  rst_ni,      	
+        input  logic  clk,
+        output logic  random_bit
     );
 
-    logic[N_STAGES - 1 : 0]  parallel_out, random_out;
+    logic[N_STAGES - 1 : 0]  last_out, random_out;
     logic out_xor_tree;
+    logic random_bit_s;
+
+    `ifndef SYNTHESIS
+     int unsigned inv_delay[N_STAGES][RO_LENGTH]; 
+    `endif
     
     genvar i;
     generate
         for (i = 0; i < N_STAGES; i++) begin
-            RO #(.RO_LENGTH(RO_LENGTH)) RO_i( 
-                //`ifdef SIM
-                .inv_delay(inv_delay[i]),    
-                //`endif
+            (* keep = "true" *) RO #(.RO_LENGTH(RO_LENGTH)) RO_i( 
                 .RO_enable(RO_en), 
-                .random_bit(parallel_out[i])
-                ); /* synthesis keep */
+                .random_bit(last_out[i])
+                ); /* synthesis keep */   
+            
+            `ifndef SYNTHESIS
+             assign RO_i.inv_delay = inv_delay[i];
+            `endif
         end
     endgenerate
 
     REG #(.NBITS(N_STAGES)) sampling_reg(
-                .comb_in(parallel_out),
+                .comb_in(last_out),
                 .clk(clk),
+                .rst_ni(rst_ni),
                 .dff_en(dff_en),
                 .sample_out(random_out)
             );
@@ -38,13 +43,13 @@ module top_level_RO #(
     assign out_xor_tree = ^random_out;
 
     REG #(.NBITS(1)) out_xor_reg(
-                .comb_in(out_xor_tree),
-                .clk(clk),
-                .dff_en(dff_en),
-                .sample_out(random_bit)
-            );
+            .comb_in(out_xor_tree),
+            .clk(clk),
+            .rst_ni(rst_ni),
+            .dff_en(dff_en),
+            .sample_out(random_bit_s)
+        );
 
+    assign random_bit = random_bit_s;
 
 endmodule : top_level_RO
-
-//TRY SAMPLING WITH ANOTHER RO wrt clk --> independence on deterministic jitter attacks

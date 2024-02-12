@@ -1,0 +1,21 @@
+{
+    name: "trng_data",
+    clock_primary: "clk_i",
+    reset_primary: "rst_ni",
+    bus_interfaces: [
+    { protocol: "reg_iface", direction: "device" }
+    ],
+    regwidth: "32",
+    registers: [
+        { name: "TRNG_DOUT"
+          desc: "Random key"
+        	  swaccess: "ro",
+        	  hwaccess: "hwo",
+        	  hwext : "true",
+        	  fields: [
+        	      { bits: "31:0"
+        	      }
+            ]
+        }
+    ],
+}

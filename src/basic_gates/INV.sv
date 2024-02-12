@@ -2,20 +2,20 @@
 
 module INV 
     (
-     //`ifdef SIM
-      input int unsigned    delay,    
-     //`endif
-
      input logic            in,	      
      output logic           out   	       
    );
 
+   `ifdef SIM
+    int unsigned    delay; 
+    `endif
+
     always_comb begin
-        //`ifdef SIM
+        `ifdef SIM
           out <= #delay ~in;
-        //`else
-        //  out <= ~in;
-        //`endif
+        `else
+          out <= ~in;
+        `endif
     end
 
 endmodule : INV
