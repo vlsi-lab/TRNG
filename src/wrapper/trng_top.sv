@@ -19,17 +19,16 @@ module trng_top
 	input 	    reg_req_t reg_req_i,
     output 	    reg_rsp_t reg_rsp_o,
   
-    output      trng_intr_o,
-	output 	    keccak_intr_o
+    output      trng_intr_o
 );
 
    reg_req_t periph_req_i;   
    reg_rsp_t periph_rsp_o;
    
-   trng_keccak_data_reg2hw_t reg_file_to_ip_data;
-   trng_keccak_data_hw2reg_t ip_to_reg_file_data;   
-   trng_keccak_ctrl_reg2hw_t reg_file_to_ip_ctrl;
-   trng_keccak_ctrl_hw2reg_t ip_to_reg_file_ctrl;
+   trng_data_reg2hw_t reg_file_to_ip_data;
+   trng_data_hw2reg_t ip_to_reg_file_data;   
+   trng_ctrl_reg2hw_t reg_file_to_ip_ctrl;
+   trng_ctrl_hw2reg_t ip_to_reg_file_ctrl;
 
 	
    periph_to_reg #(
