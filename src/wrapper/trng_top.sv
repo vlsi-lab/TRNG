@@ -25,7 +25,7 @@ module trng_top
    reg_req_t periph_req_i;   
    reg_rsp_t periph_rsp_o;
    
-   trng_data_reg2hw_t reg_file_to_ip_data;
+
    trng_data_hw2reg_t ip_to_reg_file_data;   
    trng_ctrl_reg2hw_t reg_file_to_ip_ctrl;
    trng_ctrl_hw2reg_t ip_to_reg_file_ctrl;
@@ -104,8 +104,8 @@ module trng_top
         .trng_intr(trng_intr_o)
 	); 
 
-    assign ip_to_reg_file_ctrl.status.trng.de = key_ready_s;
-    assign ip_to_reg_file_ctrl.status.trng.d = key_ready_s;
+    assign ip_to_reg_file_ctrl.status.de = key_ready_s;
+    assign ip_to_reg_file_ctrl.status.d = key_ready_s;
     assign ip_to_reg_file_data = out_key;
 
 endmodule : trng_top
