@@ -86,6 +86,9 @@ module trng_top
 
    logic[31 : 0]   out_key; 
    logic key_ready_s;
+   // not used for now 
+   logic conditioning;
+   assign conditioning = reg_file_to_ip_ctrl[1];
 
   `ifndef SYNTHESIS
     int unsigned inv_delay[N_STAGES][RO_LENGTH];  
