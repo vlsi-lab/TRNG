@@ -39,10 +39,11 @@ module trng #(
    );
 
    health_test #(.NBITS(N_BITS_KEY), .CUTOFF(589), .FAIL_THRESH(11)) health_comp (
-   .samples(random_seq),
-   .clk(clk),
-   .error(error_s),
-   .total_failure(tot_fail_s)
+    .enable(enable_dp_s),
+    .samples(random_seq),
+    .clk(clk),
+    .error(error_s),
+    .total_failure(tot_fail_s)
     );
  
   trng_cu CU_comp (
