@@ -16,9 +16,6 @@ module trng_cu
     typedef enum {IDLE, BIST, ES32, WAIT, DEAD} state_trng;
     state_trng curr_state, next_state;
 
-    // latency = 1 ck x N (depends on how many parallel bits generates the TRNG)
-    // worst case = 32
-    // best case = 1
     localparam int latency = 1;
     
     //counter size changes depending on latency
@@ -51,7 +48,6 @@ module trng_cu
             curr_state <= DEAD;
         end
     end 
-    //quanto durano i segnali di enable?
 
     // Despite of the state I'm in, I want to clear the registers containing the key as soon as it is read
     // If I have a total failure emergency I need to be in the DEAD state (unrecoverable)
@@ -80,21 +76,18 @@ module trng_cu
             // 10 is an arbitrary choice 
             if (counter_BIST == (10*latency)) begin
                 next_state   <= WAIT;
-                // AGGIUNTO DOPO
                 trng_intr    <= 0;
                 rnd_ready_o  <= 0;
                 enable_dp_o  <= 1;
                 flush_regs_o <= 1;
                 dff_en_o     <= 1;
-                //
-            end else begin
-                // AGGIUNTO DOPO
+                
+            end else begin         
                 trng_intr <= 0;
                 rnd_ready_o  <= 0;
                 enable_dp_o  <= 1;
                 flush_regs_o <= 1;
                 dff_en_o     <= 1;
-                //
                 next_state   <= BIST;
             end
         end
@@ -124,7 +117,6 @@ module trng_cu
             end
         end
 
-        //depends on latency of the system, if 32 bits of randomness ready in one clock cycle, state not even needed
         WAIT: begin
             if(error_i) begin
                 next_state  <= BIST;
