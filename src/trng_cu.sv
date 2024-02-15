@@ -13,14 +13,17 @@ module trng_cu
      output logic   trng_intr   
    );
 
-    typedef enum {IDLE, BIST, ES32, WAIT, DEAD} state_trng;
+    typedef enum {IDLE, BIST, ES32, WAIT, WAIT_FOR_ACK, DEAD} state_trng;
     state_trng curr_state, next_state;
 
+    // latency = 1 ck x N (depends on how many parallel bits generates the TRNG)
+    // worst case = 32
+    // best case = 1
     localparam int latency = 1;
     
     //counter size changes depending on latency
     logic[7:0] counter_BIST;
-    logic[7:0] counter_WAIT;
+    logic[10:0] counter_WAIT;
 
     always_ff @(posedge clk_i) begin
         if (!rst_ni) begin    
@@ -48,6 +51,7 @@ module trng_cu
             curr_state <= DEAD;
         end
     end 
+    //quanto durano i segnali di enable?
 
     // Despite of the state I'm in, I want to clear the registers containing the key as soon as it is read
     // If I have a total failure emergency I need to be in the DEAD state (unrecoverable)
@@ -76,18 +80,21 @@ module trng_cu
             // 10 is an arbitrary choice 
             if (counter_BIST == (10*latency)) begin
                 next_state   <= WAIT;
+                // AGGIUNTO DOPO
                 trng_intr    <= 0;
                 rnd_ready_o  <= 0;
                 enable_dp_o  <= 1;
                 flush_regs_o <= 1;
                 dff_en_o     <= 1;
-                
-            end else begin         
+                //
+            end else begin
+                // AGGIUNTO DOPO
                 trng_intr <= 0;
                 rnd_ready_o  <= 0;
                 enable_dp_o  <= 1;
                 flush_regs_o <= 1;
                 dff_en_o     <= 1;
+                //
                 next_state   <= BIST;
             end
         end
@@ -113,15 +120,16 @@ module trng_cu
                 rnd_ready_o  <= 1;
                 enable_dp_o   <= 1;
                 dff_en_o      <= 1;
-                next_state   <= ES32;
+                next_state   <= WAIT_FOR_ACK;
             end
         end
 
+        //depends on latency of the system, if 32 bits of randomness ready in one clock cycle, state not even needed
         WAIT: begin
             if(error_i) begin
                 next_state  <= BIST;
             end
-            else if(counter_WAIT == (30)) begin
+            else if(counter_WAIT == (500)) begin
                 next_state  <= ES32;
             end else begin
                 next_state  <= WAIT;
@@ -135,6 +143,31 @@ module trng_cu
                 flush_regs_o <= 1;
             end else begin
                 flush_regs_o <= 0;
+            end
+        end
+
+        WAIT_FOR_ACK: begin
+            if(error_i) begin
+                trng_intr     <= 0;
+                flush_regs_o  <= 1;
+                rnd_ready_o   <= 0;
+                enable_dp_o   <= 1;
+                dff_en_o      <= 1;
+                next_state  <= BIST;
+            end else if(ack_read_i) begin
+                trng_intr     <= 0;
+                flush_regs_o  <= 1;
+                rnd_ready_o   <= 0;
+                enable_dp_o   <= 1;
+                dff_en_o      <= 1;
+                next_state   <= WAIT;
+            end else begin
+                flush_regs_o <= 0;
+                trng_intr    <= 0;
+                rnd_ready_o  <= 0;
+                enable_dp_o   <= 1;
+                dff_en_o      <= 1;
+                next_state   <= WAIT_FOR_ACK;
             end
         end
 
