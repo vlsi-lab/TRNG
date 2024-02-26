@@ -1,6 +1,6 @@
 module trng #(
     parameter int unsigned N_STAGES = 32,
-    parameter int unsigned RO_LENGTH = 64,
+    parameter int unsigned RO_LENGTH = 13,
     parameter int unsigned N_BITS_KEY = 32
   )
     (
@@ -13,7 +13,7 @@ module trng #(
         output logic                       trng_intr
    );
 
-   logic enable_dp_s, error_s, tot_fail_s, dff_en_s, flush_reg_s, rnd_ready_s;
+   logic enable_ht_s, error_s, tot_fail_s, dff_en_s, flush_reg_s, rnd_ready_s;
    logic[N_BITS_KEY - 1 : 0] random_seq;
    logic rnd_bit_s;
 
@@ -38,9 +38,10 @@ module trng #(
     .sample_out(random_seq)
    );
 
-   health_test #(.NBITS(N_BITS_KEY), .CUTOFF(589), .FAIL_THRESH(11)) health_comp (
-    .enable(enable_dp_s),
-    .samples(random_seq),
+   health_test #(.NBITS(28), .CUTOFF(589), .FAIL_THRESH(11)) health_comp (
+    .rnd_bit(rnd_bit_s),
+    .rst_ni(rst_n),
+    .enable(enable_ht_s),
     .clk(clk),
     .error(error_s),
     .total_failure(tot_fail_s)
@@ -52,8 +53,8 @@ module trng #(
     .enable_i(enable),
     .error_i(error_s),
     .ack_read_i(ack_read),
-    .total_failure(tot_fail_s),
-    .enable_dp_o(enable_dp_s),
+    .tot_fail_i(tot_fail_s),
+    .enable_ht_o(enable_ht_s),
     .dff_en_o(dff_en_s),
     .flush_regs_o(flush_reg_s),
     .rnd_ready_o(rnd_ready_s),
@@ -61,7 +62,8 @@ module trng #(
   );
 
   
-  assign out_key = (rnd_ready_s && (!flush_reg_s))? random_seq : 32'b0;
+  //assign out_key = (rnd_ready_s && (!flush_reg_s))? random_seq : 32'b0;
+  assign out_key = random_seq;
   assign key_ready = rnd_ready_s;
   
 endmodule : trng
