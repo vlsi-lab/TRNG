@@ -7,7 +7,7 @@
 
 `include "common_cells/assertions.svh"
 
-module trng_ctrl_reg_top #(
+module trng_keccak_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
   parameter int AW = 3
@@ -17,15 +17,15 @@ module trng_ctrl_reg_top #(
   input  reg_req_t reg_req_i,
   output reg_rsp_t reg_rsp_o,
   // To HW
-  output trng_ctrl_reg_pkg::trng_ctrl_reg2hw_t reg2hw, // Write
-  input  trng_ctrl_reg_pkg::trng_ctrl_hw2reg_t hw2reg, // Read
+  output trng_keccak_ctrl_reg_pkg::trng_keccak_ctrl_reg2hw_t reg2hw, // Write
+  input  trng_keccak_ctrl_reg_pkg::trng_keccak_ctrl_hw2reg_t hw2reg, // Read
 
 
   // Config
   input devmode_i // If 1, explicit error return for unmapped register access
 );
 
-  import trng_ctrl_reg_pkg::* ;
+  import trng_keccak_ctrl_reg_pkg::* ;
 
   localparam int DW = 32;
   localparam int DBW = DW/8;                    // Byte Width
@@ -70,11 +70,14 @@ module trng_ctrl_reg_top #(
   //        or <reg>_{wd|we|qs} if field == 1 or 0
   logic ctrl_trng_en_wd;
   logic ctrl_trng_en_we;
+  logic ctrl_keccak_en_wd;
+  logic ctrl_keccak_en_we;
   logic ctrl_conditioning_wd;
   logic ctrl_conditioning_we;
   logic ctrl_ack_key_read_wd;
   logic ctrl_ack_key_read_we;
-  logic status_qs;
+  logic status_keccak_qs;
+  logic status_trng_qs;
 
   // Register instances
   // R[ctrl]: V(False)
@@ -104,7 +107,32 @@ module trng_ctrl_reg_top #(
   );
 
 
-  //   F[conditioning]: 1:1
+  //   F[keccak_en]: 1:1
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("WO"),
+    .RESVAL  (1'h0)
+  ) u_ctrl_keccak_en (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (ctrl_keccak_en_we),
+    .wd     (ctrl_keccak_en_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.ctrl.keccak_en.q ),
+
+    .qs     ()
+  );
+
+
+  //   F[conditioning]: 2:2
   prim_subreg #(
     .DW      (1),
     .SWACCESS("WO"),
@@ -129,7 +157,7 @@ module trng_ctrl_reg_top #(
   );
 
 
-  //   F[ack_key_read]: 2:2
+  //   F[ack_key_read]: 3:3
   prim_subreg #(
     .DW      (1),
     .SWACCESS("WO"),
@@ -156,11 +184,12 @@ module trng_ctrl_reg_top #(
 
   // R[status]: V(False)
 
+  //   F[keccak]: 0:0
   prim_subreg #(
     .DW      (1),
     .SWACCESS("RO"),
     .RESVAL  (1'h0)
-  ) u_status (
+  ) u_status_keccak (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
 
@@ -168,15 +197,40 @@ module trng_ctrl_reg_top #(
     .wd     ('0  ),
 
     // from internal hardware
-    .de     (hw2reg.status.de),
-    .d      (hw2reg.status.d ),
+    .de     (hw2reg.status.keccak.de),
+    .d      (hw2reg.status.keccak.d ),
 
     // to internal hardware
     .qe     (),
     .q      (),
 
     // to register interface (read)
-    .qs     (status_qs)
+    .qs     (status_keccak_qs)
+  );
+
+
+  //   F[trng]: 1:1
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RO"),
+    .RESVAL  (1'h0)
+  ) u_status_trng (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    .we     (1'b0),
+    .wd     ('0  ),
+
+    // from internal hardware
+    .de     (hw2reg.status.trng.de),
+    .d      (hw2reg.status.trng.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (status_trng_qs)
   );
 
 
@@ -185,8 +239,8 @@ module trng_ctrl_reg_top #(
   logic [1:0] addr_hit;
   always_comb begin
     addr_hit = '0;
-    addr_hit[0] = (reg_addr == TRNG_CTRL_CTRL_OFFSET);
-    addr_hit[1] = (reg_addr == TRNG_CTRL_STATUS_OFFSET);
+    addr_hit[0] = (reg_addr == TRNG_KECCAK_CTRL_CTRL_OFFSET);
+    addr_hit[1] = (reg_addr == TRNG_KECCAK_CTRL_STATUS_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -194,18 +248,21 @@ module trng_ctrl_reg_top #(
   // Check sub-word write is permitted
   always_comb begin
     wr_err = (reg_we &
-              ((addr_hit[0] & (|(TRNG_CTRL_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(TRNG_CTRL_PERMIT[1] & ~reg_be)))));
+              ((addr_hit[0] & (|(TRNG_KECCAK_CTRL_PERMIT[0] & ~reg_be))) |
+               (addr_hit[1] & (|(TRNG_KECCAK_CTRL_PERMIT[1] & ~reg_be)))));
   end
 
   assign ctrl_trng_en_we = addr_hit[0] & reg_we & !reg_error;
   assign ctrl_trng_en_wd = reg_wdata[0];
 
+  assign ctrl_keccak_en_we = addr_hit[0] & reg_we & !reg_error;
+  assign ctrl_keccak_en_wd = reg_wdata[1];
+
   assign ctrl_conditioning_we = addr_hit[0] & reg_we & !reg_error;
-  assign ctrl_conditioning_wd = reg_wdata[1];
+  assign ctrl_conditioning_wd = reg_wdata[2];
 
   assign ctrl_ack_key_read_we = addr_hit[0] & reg_we & !reg_error;
-  assign ctrl_ack_key_read_wd = reg_wdata[2];
+  assign ctrl_ack_key_read_wd = reg_wdata[3];
 
   // Read data return
   always_comb begin
@@ -215,10 +272,12 @@ module trng_ctrl_reg_top #(
         reg_rdata_next[0] = '0;
         reg_rdata_next[1] = '0;
         reg_rdata_next[2] = '0;
+        reg_rdata_next[3] = '0;
       end
 
       addr_hit[1]: begin
-        reg_rdata_next[0] = status_qs;
+        reg_rdata_next[0] = status_keccak_qs;
+        reg_rdata_next[1] = status_trng_qs;
       end
 
       default: begin
@@ -241,7 +300,7 @@ module trng_ctrl_reg_top #(
 
 endmodule
 
-module trng_ctrl_reg_top_intf
+module trng_keccak_ctrl_reg_top_intf
 #(
   parameter int AW = 3,
   localparam int DW = 32
@@ -250,8 +309,8 @@ module trng_ctrl_reg_top_intf
   input logic rst_ni,
   REG_BUS.in  regbus_slave,
   // To HW
-  output trng_ctrl_reg_pkg::trng_ctrl_reg2hw_t reg2hw, // Write
-  input  trng_ctrl_reg_pkg::trng_ctrl_hw2reg_t hw2reg, // Read
+  output trng_keccak_ctrl_reg_pkg::trng_keccak_ctrl_reg2hw_t reg2hw, // Write
+  input  trng_keccak_ctrl_reg_pkg::trng_keccak_ctrl_hw2reg_t hw2reg, // Read
   // Config
   input devmode_i // If 1, explicit error return for unmapped register access
 );
@@ -275,7 +334,7 @@ module trng_ctrl_reg_top_intf
 
   
 
-  trng_ctrl_reg_top #(
+  trng_keccak_ctrl_reg_top #(
     .reg_req_t(reg_bus_req_t),
     .reg_rsp_t(reg_bus_rsp_t),
     .AW(AW)
