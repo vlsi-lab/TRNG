@@ -1,6 +1,6 @@
 module top_level_RO #(
         parameter int unsigned N_STAGES = 32,
-        parameter int unsigned RO_LENGTH = 64
+        parameter int unsigned RO_LENGTH = 13
     )
     (
         input  logic  RO_en,
@@ -10,9 +10,9 @@ module top_level_RO #(
         output logic  random_bit
     );
 
-    logic[N_STAGES - 1 : 0]  last_out, random_out;
-    logic out_xor_tree;
-    logic random_bit_s;
+    (* keep = "true" *) logic[N_STAGES - 1 : 0]  last_out, random_out;
+    (* keep = "true" *) logic out_xor_tree;
+    (* keep = "true" *) logic random_bit_s;
 
     `ifndef SYNTHESIS
      int unsigned inv_delay[N_STAGES][RO_LENGTH]; 
