@@ -1,12 +1,11 @@
-module trng_top 
-  import trng_data_reg_pkg::*;
-  import trng_ctrl_reg_pkg::*;
+module trng_keccak_top 
+  import trng_keccak_data_reg_pkg::*;
+  import trng_keccak_ctrl_reg_pkg::*;
   import reg_pkg::*;
   import obi_pkg::*;  
   #(
     parameter int unsigned N_STAGES = 32,
-    parameter int unsigned RO_LENGTH = 13,
-    parameter int unsigned N_BITS_KEY = 32
+    parameter int unsigned RO_LENGTH = 13
   )
 (
 	input logic clk_i,
@@ -19,16 +18,17 @@ module trng_top
 	input 	    reg_req_t reg_req_i,
         output 	    reg_rsp_t reg_rsp_o,
   
-        output      trng_intr_o
+        output      trng_intr_o,
+	output 	    keccak_intr_o
 );
 
    reg_req_t periph_req_i;   
    reg_rsp_t periph_rsp_o;
    
-
-   trng_data_hw2reg_t ip_to_reg_file_data;   
-   trng_ctrl_reg2hw_t reg_file_to_ip_ctrl;
-   trng_ctrl_hw2reg_t ip_to_reg_file_ctrl;
+   trng_keccak_data_reg2hw_t reg_file_to_ip_data;
+   trng_keccak_data_hw2reg_t ip_to_reg_file_data;   
+   trng_keccak_ctrl_reg2hw_t reg_file_to_ip_ctrl;
+   trng_keccak_ctrl_hw2reg_t ip_to_reg_file_ctrl;
 
 	
    periph_to_reg #(
@@ -54,7 +54,7 @@ module trng_top
    );
 
 
-   trng_data_reg_top #(
+   trng_keccak_data_reg_top #(
 	.reg_req_t(reg_req_t),
 	.reg_rsp_t(reg_rsp_t)
 	) i_data_regfile (
@@ -65,11 +65,12 @@ module trng_top
 		.reg_req_i(periph_req_i),
 		.reg_rsp_o(periph_rsp_o),
 		
-		// Signals from regfile to IP
+		// Signals from regfile to keccak IP
+		.reg2hw(reg_file_to_ip_data),
 		.hw2reg(ip_to_reg_file_data) 
 	);
 
-   trng_ctrl_reg_top #(
+   trng_keccak_ctrl_reg_top #(
 	.reg_req_t(reg_req_t),
 	.reg_rsp_t(reg_rsp_t)
 	) i_ctrl_regfile (
@@ -79,34 +80,43 @@ module trng_top
 		// From the bus to regfile
 		.reg_req_i(reg_req_i),
 		.reg_rsp_o(reg_rsp_o),		
-		// Signals from regfile to IP
+		// Signals from regfile to keccak IP
 		.reg2hw(reg_file_to_ip_ctrl),
 		.hw2reg(ip_to_reg_file_ctrl) 
 	);
 
+   // wiring signals between control unit and ip
+   logic[1599 : 0] din_keccak, dout_keccak;
    logic[31 : 0]   out_key; 
    logic key_ready_s;
-   // not used for now 
-   logic conditioning;
-   assign conditioning = reg_file_to_ip_ctrl[1];
 
   `ifndef SYNTHESIS
     int unsigned inv_delay[N_STAGES][RO_LENGTH];  
-    assign i_trng.inv_delay = inv_delay;
-   `endif	
+    assign i_keccak_trng.inv_delay = inv_delay;
+   `endif
+
+   assign din_keccak = reg_file_to_ip_data.keccak_din;	
    
-	trng #(.N_STAGES(N_STAGES), .RO_LENGTH(RO_LENGTH), .N_BITS_KEY(N_BITS_KEY)) i_trng (
+
+	trng_keccak #(.N_STAGES(N_STAGES), .RO_LENGTH(RO_LENGTH)) i_keccak_trng (
 	.clk(clk_i),
 	.rst_n(rst_ni),
-        .enable(reg_file_to_ip_ctrl[2]),
-        .ack_read(reg_file_to_ip_ctrl[0]),
+        .op_mode({reg_file_to_ip_ctrl[2], reg_file_to_ip_ctrl[3]}),
+        .conditioning(reg_file_to_ip_ctrl[1]),
+        .ack_key_read(reg_file_to_ip_ctrl[0]),
+	.keccak_in(din_keccak),
         .key_ready(key_ready_s),
-        .out_key(out_key),
-        .trng_intr(trng_intr_o)
+        .trng_intr(trng_intr_o),
+        .key_out(out_key),
+	.status_d(ip_to_reg_file_ctrl.status.keccak.d),
+	.status_de(ip_to_reg_file_ctrl.status.keccak.de),
+	.keccak_intr(keccak_intr_o),
+        .keccak_out(dout_keccak)
 	); 
 
-    assign ip_to_reg_file_ctrl.status.de = key_ready_s;
-    assign ip_to_reg_file_ctrl.status.d = key_ready_s;
-    assign ip_to_reg_file_data = out_key;
+    assign ip_to_reg_file_ctrl.status.trng.de = key_ready_s;
+    assign ip_to_reg_file_ctrl.status.trng.d = key_ready_s;
+    assign ip_to_reg_file_data.keccak_dout = dout_keccak;
+    assign ip_to_reg_file_data.trng_dout = out_key;
 
-endmodule : trng_top
+endmodule : trng_keccak_top
