@@ -1,7 +1,7 @@
 module health_test #(
-        parameter int unsigned NBITS,
-        parameter int unsigned CUTOFF,
-        parameter int unsigned FAIL_THRESH
+        parameter int unsigned NBITS = 28,
+        parameter int unsigned CUTOFF = 589,
+        parameter int unsigned FAIL_THRESH = 11
        )
     (
      input  logic                 rnd_bit,
@@ -14,11 +14,11 @@ module health_test #(
 
     logic[NBITS - 1 : 0] rep_count_samples;
     logic stuck_at_0, stuck_at_1;
-    logic error_adapt = 0;
-    logic tot_fail_s = 0;
-    (* keep = "true" *) int unsigned acc = 0;
-    int unsigned cnt = 0;
-    int unsigned consec_error_cnt = 0;
+    logic error_adapt;
+    logic tot_fail_s;
+    (* keep = "true" *) int unsigned acc;
+    int unsigned cnt;
+    int unsigned consec_error_cnt;
 
     SHIFT_REG #(.NBITS(NBITS)) rep_count_shif_reg (
     .in_bit(rnd_bit),
@@ -32,7 +32,14 @@ module health_test #(
     assign stuck_at_0 = &(~rep_count_samples);
 
     always_ff @(posedge clk) begin
-        if(rst_ni && enable) begin
+        if(!rst_ni) begin
+            acc <= 0;
+            cnt <= 0;
+            consec_error_cnt <= 0;
+            error_adapt <= 0;
+            tot_fail_s <= 0;
+        end
+        else if(rst_ni && enable) begin
             // window of 1024 samples
             if(cnt < 1023) begin
                 // new value in shift register accumulated
@@ -63,6 +70,6 @@ module health_test #(
     end
 
     assign total_failure = tot_fail_s;
-    assign error = (stuck_at_0 | stuck_at_1 | error_adapt); // & (~tot_fail_s);
+    assign error = (stuck_at_0 | stuck_at_1 | error_adapt);
 
 endmodule : health_test
