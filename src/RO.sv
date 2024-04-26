@@ -1,14 +1,16 @@
-module RO #(parameter int unsigned RO_LENGTH = 64)
+module RO #(parameter int unsigned RO_LENGTH = 13)
    (
      input  logic                     RO_enable,
      output logic                     random_bit       
    );
     
-    logic[RO_LENGTH - 1 : 0] out_inv;
+    (* keep = "true" *) logic[RO_LENGTH - 1 : 0] out_inv;
 
     `ifndef SYNTHESIS
      int unsigned inv_delay[RO_LENGTH];    
     `endif
+
+    
         
     genvar i;
     generate
