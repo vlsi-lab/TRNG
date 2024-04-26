@@ -29,7 +29,7 @@ void get_rnd_key(uint8_t conditioning, uint32_t* Dout)
     uint32_t volatile *status_reg = (uint32_t*) TRNG_STATUS_START_ADDR;
     uint8_t volatile key_ready;
     // Performance regs variables
-	unsigned int volatile cycles = 0;
+    unsigned int volatile cycles = 0;
     
     // Starting the performance counter
     CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
@@ -39,14 +39,7 @@ void get_rnd_key(uint8_t conditioning, uint32_t* Dout)
     asm volatile ("": : : "memory");
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
     asm volatile ("": : : "memory");
-    // Valuta overhead attivazione Keccak HW/SW
-    //*ctrl_reg = conditioning << TRNG_CTRL_CTRL_CONDITIONING_BIT;
-    // SERVE MASKING DI TUTTI I BIT
-    //asm volatile ("": : : "memory");
     *ctrl_reg = 1 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
-    //int i = 0; 
-    //while(i < 200) // 100 = 3 clk cycles
-    //    i++; 
     asm volatile ("": : : "memory");
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
 
@@ -57,20 +50,6 @@ void get_rnd_key(uint8_t conditioning, uint32_t* Dout)
   
     // get key
     *Dout = Dout_reg[0];
-
-    //printf("Key: %08X \n", Dout_reg[0]);
-    
-    /*char buffer[9];
-        
-    for (i = 0; i < 8; i++) {
-        uint32_t nibble = (var >> (28 - 4 * i)) & 0xF;
-        buffer[i] = (nibble < 10) ? ('0' + nibble) : ('A' + nibble - 10);
-    }
-    buffer[8] = '\0'; // Null terminator
-
-    printf("%s\n", buffer);
-
-    printf("Test\n"); */
 
     // acknowledge key
     *ctrl_reg = 1 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
@@ -89,15 +68,13 @@ void get_rnd_key_intr(uint8_t conditioning, uint32_t* Dout)
     uint32_t volatile *status_reg = (uint32_t*) TRNG_STATUS_START_ADDR;
     uint8_t volatile key_ready;
     // Performance regs variables
-	unsigned int volatile cycles = 0;
+    unsigned int volatile cycles = 0;
 
     // Interrupt 
-    //plic_result_t plic_res; 
     plic_Init();     
     plic_irq_set_priority(EXT_INTR_0, 1);
     plic_irq_set_enabled(EXT_INTR_0, kPlicToggleEnabled);
 
-    //CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
     CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
     CSR_WRITE(CSR_REG_MCYCLE, 0);
     CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
@@ -109,14 +86,7 @@ void get_rnd_key_intr(uint8_t conditioning, uint32_t* Dout)
     asm volatile ("": : : "memory");
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
     asm volatile ("": : : "memory");
-    // Valuta overhead attivazione Keccak HW/SW
-    //*ctrl_reg = conditioning << TRNG_CTRL_CTRL_CONDITIONING_BIT;
-    // SERVE MASKING DI TUTTI I BIT
-    //asm volatile ("": : : "memory");
     *ctrl_reg = 1 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
-    //int i = 0; 
-    //while(i < 200) // 100 = 3 clk cycles
-    //    i++; 
     asm volatile ("": : : "memory");
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
     
@@ -126,12 +96,7 @@ void get_rnd_key_intr(uint8_t conditioning, uint32_t* Dout)
     
     // get key
     *Dout = Dout_reg[0];
-
-    //printf("Key : %08X \n", Dout_reg[0]);
-
-    // acknowledge key
     *ctrl_reg = 1 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
-    // stop the HW counter used for monitoring
     
     CSR_READ(CSR_REG_MCYCLE, &cycles);
     printf("\nNumber of clock cycles to generate the key - interrupt: %d\n", cycles);
@@ -145,7 +110,7 @@ void get_rnd_bytes_poll(size_t nbytes, uint8_t *Dout)
     uint32_t volatile *status_reg = (uint32_t*) TRNG_STATUS_START_ADDR;
     uint8_t volatile key_ready;
     // Performance regs variables
-	unsigned int volatile cycles = 0;
+    unsigned int volatile cycles = 0;
     
     // Starting the performance counter
     //CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
@@ -160,25 +125,6 @@ void get_rnd_bytes_poll(size_t nbytes, uint8_t *Dout)
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
 
     // poll
-  
-    // get key
-    //*Dout = Dout_reg[0];
-
-    //printf("Key: %08X \n", Dout_reg[0]);
-    
-    /*char buffer[9];
-        
-    for (i = 0; i < 8; i++) {
-        uint32_t nibble = (var >> (28 - 4 * i)) & 0xF;
-        buffer[i] = (nibble < 10) ? ('0' + nibble) : ('A' + nibble - 10);
-    }
-    buffer[8] = '\0'; // Null terminator
-
-    printf("%s\n", buffer);
-
-    printf("Test\n"); */
-
-    // acknowledge key
     uint32_t mask = 0x000000FF;
     for(int i = 0; i < nbytes; i=i+4){
         asm volatile ("": : : "memory");
@@ -192,12 +138,7 @@ void get_rnd_bytes_poll(size_t nbytes, uint8_t *Dout)
          Dout[i+j] = (Dout_reg[0] >> (j<<3)) & mask;
         
         *ctrl_reg = 1 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
-        //printf("%d", *ctrl_reg);
     }
-    
-    // stop the HW counter used for monitoring
-    //CSR_READ(CSR_REG_MCYCLE, &cycles);
-    //printf("\nNumber of clock cycles to generate the key - polling: %d\n", cycles);
 }
 
 void get_rnd_bytes_intr(size_t nbytes, uint8_t* Dout)
@@ -207,15 +148,13 @@ void get_rnd_bytes_intr(size_t nbytes, uint8_t* Dout)
     uint32_t volatile *status_reg = (uint32_t*) TRNG_STATUS_START_ADDR;
     uint8_t volatile key_ready;
     // Performance regs variables
-	unsigned int volatile cycles = 0;
+    unsigned int volatile cycles = 0;
 
     // Interrupt 
-    //plic_result_t plic_res; 
     plic_Init();     
     plic_irq_set_priority(EXT_INTR_0, 1);
     plic_irq_set_enabled(EXT_INTR_0, kPlicToggleEnabled);
 
-    //CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
     CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
     CSR_WRITE(CSR_REG_MCYCLE, 0);
     CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
@@ -223,18 +162,9 @@ void get_rnd_bytes_intr(size_t nbytes, uint8_t* Dout)
     const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
     CSR_SET_BITS(CSR_REG_MIE, mask);
 
-    // trigger 
-    //asm volatile ("": : : "memory");
-    //*ctrl_reg = 0 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
+    
     asm volatile ("": : : "memory");
-    // Valuta overhead attivazione Keccak HW/SW
-    //*ctrl_reg = conditioning << TRNG_CTRL_CTRL_CONDITIONING_BIT;
-    // SERVE MASKING DI TUTTI I BIT
-    //asm volatile ("": : : "memory");
     *ctrl_reg = 1 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
-    //int i = 0; 
-    //while(i < 200) // 100 = 3 clk cycles
-    //    i++; 
     asm volatile ("": : : "memory");
     *ctrl_reg = 0 << TRNG_CTRL_CTRL_TRNG_EN_BIT;
     
@@ -250,20 +180,8 @@ void get_rnd_bytes_intr(size_t nbytes, uint8_t* Dout)
         for(int j = 0; j < 4; j++)
          Dout[i+j] = (Dout_reg[0] >> (j<<3)) & mask_bits;
         
-
         *ctrl_reg = 1 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
-        //printf("%d", *ctrl_reg);
     }
-    
-    // get key
-    //for(int i = 0; i < n_elem; i++)
-    //    *Dout[i] = Dout_reg[0];
-
-    //printf("Key : %08X \n", Dout_reg[0]);
-
-    // acknowledge key
-    //*ctrl_reg = 1 << TRNG_CTRL_CTRL_ACK_KEY_READ_BIT;
-    // stop the HW counter used for monitoring
     
     CSR_READ(CSR_REG_MCYCLE, &cycles);
     printf("\nNumber of clock cycles to generate the key - interrupt: %d\n", cycles);
