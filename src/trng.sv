@@ -1,7 +1,9 @@
 module trng #(
     parameter int unsigned N_STAGES = 32,
     parameter int unsigned RO_LENGTH = 13,
-    parameter int unsigned N_BITS_KEY = 32
+    parameter int unsigned N_BITS_KEY = 32,
+    parameter int unsigned WAIT_CONST = 30,
+    parameter int unsigned LATENCY = 1
   )
     (
         input  logic                       enable,
@@ -47,7 +49,7 @@ module trng #(
     .total_failure(tot_fail_s)
     );
  
-  trng_cu CU_comp (
+  trng_cu #(.WAIT_CONST(WAIT_CONST), .LATENCY(LATENCY)) CU_comp (
     .rst_ni(rst_n),
     .clk_i(clk),
     .enable_i(enable),
@@ -62,7 +64,6 @@ module trng #(
   );
 
   
-  //assign out_key = (rnd_ready_s && (!flush_reg_s))? random_seq : 32'b0;
   assign out_key = random_seq;
   assign key_ready = rnd_ready_s;
   
