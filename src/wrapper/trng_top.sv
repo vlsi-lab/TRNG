@@ -4,7 +4,7 @@ module trng_top
   import reg_pkg::*;
   import obi_pkg::*;  
   #(
-    parameter int unsigned N_STAGES = 33,
+    parameter int unsigned N_STAGES = 32,
     parameter int unsigned RO_LENGTH = 13,
     parameter int unsigned N_BITS_KEY = 32
   )
@@ -15,11 +15,11 @@ module trng_top
 	// AHB Slave interface (data memory)
 	input 	    obi_req_t slave_req_i,
 	output 	    obi_resp_t slave_resp_o,
-    // APB interface (ctrl mem)
+        // APB interface (ctrl mem)
 	input 	    reg_req_t reg_req_i,
-    output 	    reg_rsp_t reg_rsp_o,
+        output 	    reg_rsp_t reg_rsp_o,
   
-    output      trng_intr_o
+        output      trng_intr_o
 );
 
    reg_req_t periph_req_i;   
@@ -96,11 +96,9 @@ module trng_top
    `endif	
    
 	trng #(.N_STAGES(N_STAGES), .RO_LENGTH(RO_LENGTH), .N_BITS_KEY(N_BITS_KEY)) i_trng (
-		.clk(clk_i),
-		.rst_n(rst_ni),
+	.clk(clk_i),
+	.rst_n(rst_ni),
         .enable(reg_file_to_ip_ctrl[2]),
-        // when simulating check if ack_key_read and 
-        // ip_to_reg_file_data.trng_dout.re have the same behaviour
         .ack_read(reg_file_to_ip_ctrl[0]),
         .key_ready(key_ready_s),
         .out_key(out_key),
