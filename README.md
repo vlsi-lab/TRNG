@@ -27,14 +27,14 @@ Both branches are internally organized as follows:
     |  └── model_files
     └── vlsi_polito_xxx.core
 
-* **regs_gen** : contains the .hjson files to be used by RegTool (not needed if components are used stand-alone).
+* **regs_gen** : contains the .hjson description files to be used by RegTool. They are used to create the register interface between X-HEEP and the accelerator (not needed if components are used stand-alone).
 * **src** : this folder contains the HDL files in SystemVerilog. A brief overview on its internal folders:
         * basic_gates: folder with the most basic gates and blocks.
-        * regs contains the registers obtained (not needed if components are used stand-alone).
+        * regs: contains the .sv registers obtained by means of RegTool (not needed if components are used stand-alone).
         * wrapper: contains the .sv file wrapping the TRNG/TRNG+KECCAK and the register interface (not needed if components are used stand-alone).
 * **sw**: provides the C drivers (not needed if components are used stand-alone).
 * **tb**: contains the testbench for X-HEEP. If the components are not integrated in X-HEEP, a new testbench can be created. The important thing is to read and assign           the delays to the inverters. The file containing this information is contained in model_files.
-* **vlsi_polito_xxx.core**: the core file to be used for FuseSOC (not needed if components are used stand-alone).
+* **vlsi_polito_xxx.core**: the core file to be used for the integration with FuseSOC (not needed if components are used stand-alone).
 
 ## Getting started
 Get the repository:
