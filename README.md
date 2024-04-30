@@ -35,7 +35,7 @@ See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-Valeria Piscopo - ADD INFORMATION 
+Valeria Piscopo - [linkedin](https://www.linkedin.com/in/valeria-piscopo-4aa88b256) - valepiscopo.hk@gmail.com
 
 Alessandra Dolmeta - [linkedin](https://www.linkedin.com/in/alessandra-dolmeta-4884301a3/) - alessandra.dolmeta@polito.it
 
