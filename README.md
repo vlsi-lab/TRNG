@@ -8,7 +8,7 @@ The repository is organized as follows.
 
 ![Image](https://github.com/vlsi-lab/TRNG/blob/main/repo.png)
 
-The main branch contains the theoretical Python model: it generates a text file with the delays (in ps) to associate to each inverter of the noise source. This file is read in the testbench.
+The main branch contains the theoretical Python model: it generates a .txt file with the delays (in ps) to associate to each inverter of the noise source. This file is read in the testbench.
 
 The other two important branches are:
 * **x_heep_trng** : contains only the TRNG source codes.
