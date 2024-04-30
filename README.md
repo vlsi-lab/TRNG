@@ -18,7 +18,7 @@ The other two important branches are:
 TO BE MODIFIED
 Get the repository:
 ```
-git clone --recursive https://github.com/vlsi-lab/keccak_integration.git
+git clone --recursive https://github.com/vlsi-lab/TRNG.git
 ```
 And check for the branch desired.
 ```
