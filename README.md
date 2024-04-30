@@ -3,7 +3,7 @@
 In the **TRNG** repository you can find an example of ..... 
 The repository is organized as follows. 
 
-![Image](https://github.com/vlsi-lab/keccak_integration/blob/main/repo_org.png)
+![Image]([https://github.com/vlsi-lab/keccak_integration/blob/main/repo_org.png](https://github.com/vlsi-lab/TRNG/blob/main/repo.png))
 
 There are two important branches:
 * __keccak_pulpissimo__
