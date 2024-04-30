@@ -25,8 +25,6 @@ Both branches are internally organized as follows:
     ├── tb
     |  └── model_files
     └── vlsi_polito_xxx.core
-<br />
-<p align="left"><img src="logo/x-heep.png" width="250"></p>
 
 * **regs_gen** : contains the .hjson files to be used by RegTool (not needed if components are used stand-alone).
 * **src** : this folder contains the HDL files in SystemVerilog. A brief overview on its internal folders:
