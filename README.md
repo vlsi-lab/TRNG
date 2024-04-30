@@ -15,6 +15,7 @@ The other two important branches are:
 * **x_heep_trng_keccak** : contains the files for the TRNG with the KECCAK conditiong.
 
 Both branches are internally organized as follows:
+
     .
     ├── regs_gen
     ├── src
