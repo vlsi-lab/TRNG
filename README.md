@@ -11,7 +11,7 @@ The repository is organized as follows.
 The main branch contains the theoretical Python model: it generates a text file with the delays (in ps) to associate to each inverter of the noise source. This file is read in the testbench.
 
 The other two important branches are:
-* x_heep_trng : contains only the TRNG source codes
+* x_heep_trng : contains only the TRNG source codes.
 * x_heep_trng_keccak : contains the files for the TRNG with the KECCAK conditiong.
 
 ## Getting started
