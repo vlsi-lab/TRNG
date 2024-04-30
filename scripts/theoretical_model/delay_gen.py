@@ -13,15 +13,10 @@ import matplotlib.pyplot as plot
 # Parameters
 n_RO = 32
 n_delay_elem = 13
-sigma = 50
+sigma = 30
 
 # Deterministic jitter supposed = 0
 Delta_dGD = 0
-#Delta_dGD_freq = 3000
-#sin_arg = 2*np.pi*Delta_dGD_Freq*time
-#A = 5
-#offset = 5
-#Delta_dGD = A*np.sin(sin_arg) + offset
 
 with open(os.path.join(os.getcwd(), 'model_13INV_32RO_50sigma.txt'), 'w') as fileID:
     for j in range(1, n_RO + 2):
