@@ -15,14 +15,13 @@ The other two important branches are:
 * x_heep_trng_keccak : contains the files for the TRNG with the KECCAK conditiong.
 
 ## Getting started
-TO BE MODIFIED
 Get the repository:
 ```
 git clone --recursive https://github.com/vlsi-lab/TRNG.git
 ```
 And check for the branch desired.
 ```
-git checkout keccak_XXX
+git checkout x_heep_XXX
 ```
 
 <!-- LICENSE -->
