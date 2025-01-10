@@ -1,6 +1,6 @@
 # Introduction
 
-In the **TRNG** repository you can find a hardware implementation of a Ring Oscillator-based True Random Number Generator, with or without the additional conditioning through the [Keccak function](https://github.com/vlsi-lab/keccak_integration.git). The repository is structured in such way that the component can be easily integrated as an external accelerator in the X-HEEP microcontroller; to only use the stand-alone components, just consider the "src" folders in each branch.
+In the **TRNG** repository you can find a hardware implementation of a Ring Oscillator-based True Random Number Generator, with or without the additional conditioning through the [Keccak function](https://github.com/vlsi-lab/keccak_integration.git). The repository is structured in such way that the component can be easily integrated as an external accelerator in the X-HEEP microcontroller. **To only use the stand-alone components, just consider the "src" folders in each branch.**
 
 [X-Heep](https://github.com/esl-epfl/x-heep.git) (eXtendable Heterogeneous Energy-Efficient Platform) is a RISC-V microcontroller described in SystemVerilog that can be configured to target small and tiny platforms as well as extended to support accelerators. For a correct step-by-step integration of the TRNG, follow the indications given in the X-HEEP documentation.
 
