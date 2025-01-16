@@ -26,7 +26,7 @@ filesets:
     - src/health_test.sv
     - src/trng_cu.sv
     - src/trng.sv
-    - ../vlsi_polito_keccak/hw/rtl/keccak_cu.sv
+    - src/keccak/keccak_cu.sv
     - src/trng_keccak.sv
     - src/wrapper/trng_keccak_top.sv
     file_type: systemVerilogSource
@@ -38,11 +38,11 @@ filesets:
     - x-heep::packages
     - pulp-platform.org::common_cells
     files:
-    - ../vlsi_polito_keccak/hw/rtl/keccak_globals.vhd
-    - ../vlsi_polito_keccak/hw/rtl/keccak_round_constants_gen.vhd
-    - ../vlsi_polito_keccak/hw/rtl/keccak_round.vhd
-    - ../vlsi_polito_keccak/hw/rtl/keccak_datapath.vhd
-    - ../vlsi_polito_keccak/hw/rtl/keccak.vhd
+    - src/keccak/keccak_globals.vhd
+    - src/keccak/keccak_round_constants_gen.vhd
+    - src/keccak/keccak_round.vhd
+    - src/keccak/keccak_datapath.vhd
+    - src/keccak/keccak.vhd
     file_type: vhdlSource    
     
 targets:
