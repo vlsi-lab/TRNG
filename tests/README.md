@@ -20,4 +20,9 @@ For n = 1,000,000 and 1000 bitstreams:
 ## NIST SP 800-90B
 Ref. [NIST SP 800-90B](https://doi.org/10.6028/NIST.SP.800-90B)
 
-The used test suite was obtained by cloning the [NIST SP 800-90B-GiT](https://github.com/usnistgov/SP800-90B_EntropyAssessment) repo. Check the README file of this repo for further details to execute the tests.
+The used test suite was obtained by cloning the [NIST SP 800-90B-GiT](https://github.com/usnistgov/SP800-90B_EntropyAssessment) repo. Check the README file of this repo for a detailed description to execute the IID and restart tests.
+For what concerns the conditioning tests, we used Keccak, hence a vetted component. This means that the `ea_conditioning` command is:
+`./ea_conditioning -v <n_in> 1600 1600 <h_in>`
+where `n_in` is the number of true random bits in input to Keccak and `h_in` is equal to 0.9982 (IID entropy assessment per bit) multiplied by `n_in`.
+
+In this way, the user can understand which value of `n_in` produces the required output entropy, thus how much the throughput of the whole system can be increased.
