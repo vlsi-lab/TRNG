@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 RESULTS FOR THE UNIFORMITY OF P-VALUES AND THE PROPORTION OF PASSING SEQUENCES
 ------------------------------------------------------------------------------
-   generator is </mnt/c/Linux-windows/Tesi/FPGA_data/150_MHz/data_150E6.txt>
+   generator is </mnt/c/FPGA_data/150_MHz/data_150E6.txt>
 ------------------------------------------------------------------------------
  C1  C2  C3  C4  C5  C6  C7  C8  C9 C10  P-VALUE  PROPORTION  STATISTICAL TEST
 ------------------------------------------------------------------------------
