@@ -1,4 +1,4 @@
-Opening file: '/mnt/c/FPGA_data/data_out_RO_INV/multiple_runs/13INV_32RO/data_13INV_32RO_run3.txt' (SHA-256 hash 323e9fc51344069823aedc37f9489f6db60bd636a57750d529e34b7e486ad450)
+Opening file: '/mnt/c/FPGA_data/data_out_RO_INV/multiple_runs/13INV_32RO/data_13INV_32RO_run3.txt'
 Loaded 10000640 samples of 2 distinct 6-bit-wide symbols
 
 Samples have been translated
