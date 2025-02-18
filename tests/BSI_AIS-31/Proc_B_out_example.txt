@@ -1,0 +1,41 @@
+TEST GESTARTET.
+[09:25:23] TEST-SUITE:	P2 (spezifische Tests)
+[09:25:23] DATEINAME:	/mnt/c/FPGA_data/data_out_RO_INV/multiple_runs/13INV_32RO/data_13INV_32RO_run3.bin
+[09:25:23] AUSGABEDETAILS:	Eingeschaltet.
+[09:25:23] DATENFORMAT:	1 Dateibyte enthält 8 Random-Bits.
+[09:25:23] TESTART:	Normaler Test.
+[09:25:23] RND-BITBREITE:	8 bit.
+[09:25:23]   Datei wird eingelesen.
+[09:25:23]     Kopiere BitStream-Datei in RAM ...
+[09:27:03]     Konvertiere Dateidaten in ByteStream ...
+[09:27:03]     Schreibe Restdatei: /mnt/c/Linux-windows/Tesi/FPGA_data/data_out_RO_INV/multiple_runs/13INV_32RO/data_13INV_32RO_run8.bin_rest
+[09:30:07]     7200000 Elemente in RAM kopiert.
+[09:30:07]   Datei wurde eingelesen.
+[09:30:07]   Testprozedur T6a zur Verifikation von P2.i)(vii.a) gestartet.
+[09:30:07]     |P(1) - 0.5| = 0.0019799999999999818
+[09:30:07]     Letztes Element: 100000
+[09:30:07]   Testprozedur T6a bestanden.
+[09:30:07]   Testprozedur T6b zur Verifikation von P2.i)(vii.b) gestartet.
+[09:30:07]     p(01) = 0.49791
+[09:30:07]     p(11) = 0.50232
+[09:30:07]     |p_(01) - p_(11)| = 0.0044099999999999695
+[09:30:07]     Letztes Element: 501514
+[09:30:07]   Testprozedur T6b bestanden.
+[09:30:07]   Testprozedur T7a zur Verifikation von P2.i)(vii.c) gestartet.
+[09:30:07]     Testgröße[0] = 0.5313839025365186
+[09:30:07]     Testgröße[1] = 0.11552008543865519
+[09:30:07]     Letztes Element: 1705690
+[09:30:07]   Testprozedur T7a bestanden.
+[09:30:07]   Testprozedur T7b zur Verifikation von P2.i)(vii.d) gestartet.
+[09:30:07]     Testgröße[0] = 0.8160815541457117
+[09:30:07]     Testgröße[1] = 0.046080465984104216
+[09:30:07]     Testgröße[2] = 4.62722400208604
+[09:30:07]     Testgröße[3] = 0.2691285608718699
+[09:30:07]     Letztes Element: 4918038
+[09:30:07]   Testprozedur T7b bestanden.
+[09:30:07]   Test T8 zur Verifikation von P2.i)(vii.e) gestartet.
+[09:30:07]     Testgröße = 7.999073538245429
+[09:30:07]     Letztes Element: 6986518
+[09:30:07]   Test T8 bestanden.
+[09:30:07] Durchlauf erfolgreich beendet.
+[09:42:11] 
