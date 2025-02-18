@@ -1,0 +1,159 @@
+Opening file: '/mnt/c/FPGA_data/restart.txt' 
+Loaded 1000000 samples made up of 2 distinct 8-bit-wide symbols.
+
+Symbols have been translated.
+
+H_I: 0.998200
+ALPHA: 5.0251553006530614e-06, X_cutoff: 573
+X_max: 558
+
+Restart Sanity Check Passed...
+Calculating baseline statistics...
+
+Running IID tests...
+
+Running Most Common Value Estimate...
+Literal MCV Estimate: mode = 500926, p-hat = 0.50092599999999998, p_u = 0.50221391308701746
+        Most Common Value Estimate (Rows) = 0.993626 / 8 bit(s)
+Literal MCV Estimate: mode = 500926, p-hat = 0.50092599999999998, p_u = 0.50221391308701746
+        Most Common Value Estimate (Cols) = 0.993626 / 8 bit(s)
+Chi square independence
+        score = 1992.025819
+        degrees of freedom = 2046
+        p-value = 0.799784
+
+Chi square goodness of fit
+        score = 5.116034
+        degrees of freedom = 9
+        p-value = 0.824078
+
+Chi square independence
+        score = 2071.703582
+        degrees of freedom = 2046
+        p-value = 0.340699
+
+Chi square goodness of fit
+        score = 5.894916
+        degrees of freedom = 9
+        p-value = 0.750388
+
+** Passed chi square tests
+
+Literal Longest Repeated Substring results
+        P_col: 0.500002
+        Length of LRS: 38
+        Pr(X >= 1): 0.837827
+Literal Longest Repeated Substring results
+        P_col: 0.500002
+        Length of LRS: 37
+        Pr(X >= 1): 0.973700
+** Passed length of longest repeated substring test
+
+Beginning initial tests...
+
+Initial test results
+              excursion: 272.161
+     numDirectionalRuns: 79697
+     lenDirectionalRuns: 9
+  numIncreasesDecreases: 74812
+          numRunsMedian: 499938
+          lenRunsMedian: 24
+           avgCollision: 20.5753
+           maxCollision: 74
+         periodicity(1): 24641
+         periodicity(2): 24431
+         periodicity(8): 24477
+        periodicity(16): 24230
+        periodicity(32): 24627
+          covariance(1): 2.00824e+06
+          covariance(2): 2.00725e+06
+          covariance(8): 2.00673e+06
+         covariance(16): 2.00728e+06
+         covariance(32): 2.00619e+06
+            compression: 156020
+
+Beginning permutation tests... these may take some time
+ 91.99% of Permutation test rounds, 100.00% of Permutation tests
+
+                statistic  C[i][0]  C[i][1]  C[i][2]
+----------------------------------------------------
+                excursion     182       0       6
+       numDirectionalRuns       6       0       9
+       lenDirectionalRuns     146       6       0
+    numIncreasesDecreases       6       0      12
+            numRunsMedian       7       0       6
+            lenRunsMedian       2       4      90
+             avgCollision      34       0       6
+             maxCollision       3       3      79
+           periodicity(1)       6       0      18
+           periodicity(2)      26       1       5
+           periodicity(8)      13       0       6
+          periodicity(16)     342       0       6
+          periodicity(32)       6       0      34
+            covariance(1)       6       0      27
+            covariance(2)       6       0       6
+            covariance(8)       7       0       6
+           covariance(16)       7       0       6
+           covariance(32)      10       0       6
+              compression       6       0      20
+(* denotes failed test)
+
+Beginning initial tests...
+
+Initial test results
+              excursion: 272.161
+     numDirectionalRuns: 79697
+     lenDirectionalRuns: 9
+  numIncreasesDecreases: 74812
+          numRunsMedian: 499938
+          lenRunsMedian: 24
+           avgCollision: 20.5753
+           maxCollision: 74
+         periodicity(1): 24641
+         periodicity(2): 24431
+         periodicity(8): 24477
+        periodicity(16): 24230
+        periodicity(32): 24627
+          covariance(1): 2.00824e+06
+          covariance(2): 2.00725e+06
+          covariance(8): 2.00673e+06
+         covariance(16): 2.00728e+06
+         covariance(32): 2.00619e+06
+            compression: 156020
+
+Beginning permutation tests... these may take some time
+ 92.15% of Permutation test rounds, 100.00% of Permutation tests
+
+                statistic  C[i][0]  C[i][1]  C[i][2]
+----------------------------------------------------
+                excursion      28       0       6
+       numDirectionalRuns       5       1      10
+       lenDirectionalRuns     363       6       0
+    numIncreasesDecreases       6       0      19
+            numRunsMedian      11       0       6
+            lenRunsMedian       4       2      66
+             avgCollision      52       0       6
+             maxCollision       4       2     125
+           periodicity(1)       5       1      18
+           periodicity(2)      40       1       5
+           periodicity(8)      14       0       6
+          periodicity(16)     565       0       6
+          periodicity(32)       6       0      15
+            covariance(1)       6       0      41
+            covariance(2)       7       0       6
+            covariance(8)      22       0       6
+           covariance(16)       6       0      10
+           covariance(32)      21       0       6
+              compression       6       0      10
+(* denotes failed test)
+
+** Passed IID permutation tests
+
+
+H_r: 0.993626
+H_c: 0.993626
+H_I: 0.998200
+
+Validation Test Passed...
+
+min(H_r, H_c, H_I): 0.993626
