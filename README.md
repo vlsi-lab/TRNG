@@ -1,4 +1,4 @@
-# TRNG - VLSI LA PoliTo
+# TRNG - VLSI LAB PoliTo
 
 In the **TRNG** repository you can find a hardware implementation of a Ring Oscillator-based True Random Number Generator, with or without the additional conditioning through the [Keccak function](https://github.com/vlsi-lab/keccak_integration.git). The repository is structured in such way that the component can be easily integrated as an external accelerator in the X-HEEP microcontroller. **To only use the stand-alone components, just consider the "src" folders in each branch.**
 
